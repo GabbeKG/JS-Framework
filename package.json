@@ -1,0 +1,19 @@
+{
+  "name": "astro-stateofjs",
+  "type": "module",
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "astro dev --port 5173",
+    "start": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro",
+    "test": "npx plugga test"
+  },
+  "dependencies": {
+    "astro": "^3.2.4"
+  },
+  "devDependencies": {
+    "@plugga-tech/frontend-framework": "^1.2.0"
+  }
+}

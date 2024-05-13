@@ -1,0 +1,162 @@
+---
+import Header from "../components/header.astro";
+import Footer from "../components/footer.astro";
+---
+
+<Header />
+<main>
+  <div id="divTable">
+    <table id="frameworkTable" data-cy="chart">
+      <h2>Interest</h2>
+      <thead>
+        <tr>
+          <th data-cy="chart-header-cell"></th>
+        </tr>
+        <th data-cy="chart-header-cell"></th>
+      </thead>
+      <tbody> </tbody>
+    </table>
+  </div>
+</main>
+<Footer />
+<script>
+  // Import the frameworks data
+  import { frameworks } from "../../data/index.js";
+
+  const years = [
+    ...new Set(
+      frameworks.flatMap((framework) => framework.surveys.map((s) => s.year))
+    ),
+  ];
+  years.sort();
+
+  const table = document.getElementById("frameworkTable");
+  const thead = table.querySelector("thead tr");
+  years.forEach((year) => {
+    const th = document.createElement("th");
+    th.setAttribute("data-cy", "chart-header-cell");
+    th.textContent = year.toString();
+    thead.appendChild(th);
+  });
+
+  const tbody = table.querySelector("tbody");
+  frameworks.forEach((framework) => {
+    const frameworkName = framework.name;
+    const frameworkColor = framework.color;
+    const row = document.createElement("tr");
+    row.classList.add("framework-row");
+    row.style.setProperty("--frameworkColor", frameworkColor);
+
+    //Year column
+    const leftNameCell = document.createElement("td");
+    leftNameCell.textContent = frameworkName;
+    leftNameCell.style.color = frameworkColor;
+    leftNameCell.setAttribute("data-cy", "chart-data-cell");
+
+    row.appendChild(leftNameCell);
+    years.forEach((year) => {
+      const surveyData = framework.surveys.find(
+        (survey) => survey.year === year
+      );
+      const circleCell = document.createElement("div");
+      const dataCell = document.createElement("td");
+      circleCell.textContent = surveyData ? `${surveyData.interest}%` : "";
+      circleCell.style.border = surveyData ? `${frameworkColor} solid 3px` : "";
+      circleCell.style.borderRadius = surveyData ? "50%" : "";
+      circleCell.style.padding = surveyData ? "auto .3rem" : "";
+      circleCell.style.height = "1.3rem";
+      circleCell.style.width = "1.3rem";
+      circleCell.style.backgroundColor = surveyData ? "rgb(39, 35, 37)" : "";
+      dataCell.setAttribute("data-cy", "chart-data-cell");
+      circleCell.setAttribute("data-cy", "chart-circle");
+      surveyData ? dataCell.appendChild(circleCell) : row.appendChild(dataCell);
+      row.appendChild(dataCell);
+    });
+    const rightNameCell = document.createElement("td");
+    rightNameCell.textContent = frameworkName;
+    rightNameCell.style.color = frameworkColor;
+    rightNameCell.setAttribute("data-cy", "chart-data-cell");
+
+    row.appendChild(rightNameCell);
+
+    tbody.appendChild(row);
+  });
+</script>
+<style is:global>
+  body {
+    background-color: rgb(39, 35, 37);
+    font-family: monospace;
+  }
+
+  tr.framework-row div {
+    padding: 0.5rem;
+  }
+  #frameworkTable {
+    margin: 0 auto;
+    border-spacing: 2rem;
+    padding: 2rem;
+    max-width: 100vh;
+
+    overflow-x: scroll;
+  }
+  h2 {
+    text-align: center;
+    margin: 0.5rem auto;
+    color: #fff;
+  }
+  main {
+    color: #fff;
+    margin: 2rem auto;
+  }
+  #divTable,
+  #frameworkTable {
+    max-width: 100%;
+    margin: 0 auto;
+    overflow-x: auto;
+  }
+
+  tr.framework-row::after {
+    content: "";
+    position: absolute;
+    top: 1.5em;
+    left: 5em;
+    right: 1em;
+    height: 0.2rem;
+    background: var(--frameworkColor);
+    z-index: -1;
+    border-radius: 10px;
+    opacity: 0.6;
+  }
+
+  /* Exclude the first and last td elements (framework names) from the bar styling */
+  tr.framework-row td:first-child,
+  tr.framework-row td:last-child {
+    position: relative;
+    background-color: rgb(39, 35, 37);
+    color: inherit;
+    border: none;
+    border-radius: 0;
+    padding: 0;
+    width: auto;
+    height: auto;
+    opacity: 1;
+  }
+  tr.framework-row td:last-child {
+    position: absolute;
+    top: 0.5em;
+  }
+
+  /* Adjust the table row styles */
+  tr.framework-row {
+    position: relative;
+  }
+
+  @media (max-width: 768px) {
+    #frameworkTable {
+      /* Adjust table styles for smaller screens */
+      max-width: 100%;
+    }
+
+    /* Adjust other styles for smaller screens */
+  }
+</style>

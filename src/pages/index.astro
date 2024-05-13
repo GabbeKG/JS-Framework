@@ -1,0 +1,27 @@
+---
+import Header from "../components/header.astro";
+import Footer from "../components/footer.astro";
+import DT from "../components/data-table.astro";
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+    <title>State of JS - with Astro</title>
+  </head>
+
+  <body>
+    <Header />
+    <DT />
+    <Footer />
+    <style is:global>
+      body {
+        background-color: rgb(39, 35, 37);
+        font-family: monospace;
+      }
+    </style>
+  </body>
+</html>

@@ -1,0 +1,89 @@
+---
+import Header from "../components/header.astro";
+import Footer from "../components/footer.astro";
+import DT from "../components/data-table.astro";
+---
+
+<body>
+  <Header />
+  <DT />
+  <Footer />
+</body>
+
+<style is:global>
+  tr.framework-row div {
+    padding: 0.5rem;
+  }
+  body {
+    background-color: rgb(39, 35, 37);
+    font-family: monospace;
+  }
+
+  h2 {
+    text-align: center;
+    margin: 0.5rem auto;
+    color: #fff;
+  }
+  main {
+    color: #fff;
+    margin: 2rem auto;
+  }
+  #divTable {
+    max-width: 100%;
+  }
+
+  tr.framework-row::after {
+    content: "";
+    position: absolute;
+    top: 1.5em;
+    left: 5em;
+    right: 1em;
+    height: 0.2rem;
+    background: var(--frameworkColor);
+    z-index: -1;
+    border-radius: 10px;
+    opacity: 0.6;
+  }
+
+  /* Exclude the first and last td elements (framework names) from the bar styling */
+  tr.framework-row td:first-child,
+  tr.framework-row td:last-child {
+    position: relative;
+    background-color: rgb(39, 35, 37);
+    color: inherit;
+    border: none;
+    border-radius: 0;
+    padding: 0;
+    width: auto;
+    height: auto;
+    opacity: 1;
+  }
+  tr.framework-row td:last-child {
+    position: absolute;
+    top: 1em;
+  }
+
+  /* Adjust the table row styles */
+  tr.framework-row {
+    position: relative;
+  }
+
+  @media (max-width: 768px) {
+    #frameworkTable {
+      /* Adjust table styles for smaller screens */
+      max-width: 100%;
+      overflow-x: scroll;
+    }
+  }
+  @media (max-width: 360px) {
+    #frameworkTable,
+    #divTable {
+      overflow: auto;
+    }
+
+    #frameworkTable tr > td {
+      padding-left: 1em;
+      padding-right: 1em;
+    }
+  }
+</style>

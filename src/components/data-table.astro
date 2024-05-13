@@ -1,0 +1,193 @@
+---
+import { frameworks } from "../../data/index.js";
+
+const activeRoute = Astro.params;
+
+function getDataForActiveRoute() {
+  switch (activeRoute.page) {
+    case "/retention":
+      console.log(activeRoute);
+      return "retention";
+    case "/interest":
+      console.log(activeRoute);
+      return "interest";
+    case "/usage":
+      console.log(activeRoute);
+      return "usage";
+    case "/awareness":
+      console.log(activeRoute);
+      return "awareness";
+    default:
+      console.log(activeRoute);
+      return "retention";
+  }
+}
+const dataKey = getDataForActiveRoute();
+---
+
+<main>
+  <div id="divTable">
+    <table id="frameworkTable" data-cy="chart">
+      <h2>Retention</h2>
+      <thead>
+        <tr>
+          <th data-cy="chart-header-cell"></th>
+        </tr>
+        <th data-cy="chart-header-cell"></th>
+      </thead>
+      <tbody> </tbody>
+    </table>
+  </div>
+</main>
+
+<script>
+  // Import the frameworks data
+  import { frameworks } from "../../data/index.js";
+
+  const years = [
+    ...new Set(
+      frameworks.flatMap((framework) => framework.surveys.map((s) => s.year))
+    ),
+  ];
+  years.sort();
+
+  const table = document.getElementById("frameworkTable");
+  const thead = table.querySelector("thead tr");
+  years.forEach((year) => {
+    const th = document.createElement("th");
+    th.setAttribute("data-cy", "chart-header-cell");
+    th.textContent = year.toString();
+    thead.appendChild(th);
+  });
+
+  const tbody = table.querySelector("tbody");
+  frameworks.forEach((framework) => {
+    const frameworkName = framework.name;
+    const frameworkColor = framework.color;
+    const row = document.createElement("tr");
+    row.classList.add("framework-row");
+    row.style.setProperty("--frameworkColor", frameworkColor);
+
+    //Year column
+    const leftNameCell = document.createElement("td");
+    leftNameCell.textContent = frameworkName;
+    leftNameCell.style.color = frameworkColor;
+    leftNameCell.setAttribute("data-cy", "chart-data-cell");
+
+    row.appendChild(leftNameCell);
+    years.forEach((year) => {
+      const surveyData = framework.surveys.find(
+        (survey) => survey.year === year
+      );
+      const circleCell = document.createElement("div");
+      const dataCell = document.createElement("td");
+      circleCell.textContent = surveyData ? `${surveyData.retention}%` : "";
+      circleCell.style.border = surveyData ? `${frameworkColor} solid 3px` : "";
+      circleCell.style.borderRadius = surveyData ? "50%" : "";
+      circleCell.style.padding = surveyData ? "auto .3rem" : "";
+      circleCell.style.height = "1.3rem";
+      circleCell.style.width = "1.3rem";
+      circleCell.style.backgroundColor = surveyData ? "rgb(39, 35, 37)" : "";
+      dataCell.setAttribute("data-cy", "chart-data-cell");
+      circleCell.setAttribute("data-cy", "chart-circle");
+      surveyData ? dataCell.appendChild(circleCell) : row.appendChild(dataCell);
+      row.appendChild(dataCell);
+    });
+    const rightNameCell = document.createElement("td");
+    rightNameCell.textContent = frameworkName;
+    rightNameCell.style.color = frameworkColor;
+    rightNameCell.setAttribute("data-cy", "chart-data-cell");
+
+    row.appendChild(rightNameCell);
+
+    tbody.appendChild(row);
+  });
+</script>
+<style>
+  main {
+    max-width: 80%;
+    margin: 0 auto;
+  }
+  #divTable {
+    max-width: 100%;
+    overflow-x: auto;
+  }
+  tr.framework-row div::before,
+  tr.framework-row div::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    max-width: 100vw;
+    height: 100%;
+    background: var(--frameworkColor);
+    z-index: -1;
+    border-radius: 10px;
+    opacity: 0.6;
+  }
+
+  tr.framework-row {
+    position: relative;
+  }
+  #frameworkTable {
+    margin: 0 auto;
+    border-spacing: 2rem;
+    padding: 2rem;
+    max-width: 100vh;
+
+    overflow-x: scroll;
+  }
+  #frameworkTable tr > td {
+    position: relative;
+  }
+
+  /* Create a horizontal bar */
+  #frameworkTable tr > td::before {
+    content: "";
+    position: absolute;
+    top: 10%;
+    left: 0;
+    width: 100%;
+    height: 0.2em;
+    background: var(--frameworkColor);
+    z-index: -1;
+  }
+
+  #frameworkTable tr > td {
+    position: relative;
+    z-index: 1;
+  }
+
+  main {
+    color: #fff;
+  }
+
+  @media (max-width: 768px) {
+    #frameworkTable,
+    #divTable {
+      max-width: 100%;
+      display: flex;
+
+      min-height: 80vh;
+      margin: 0 auto;
+    }
+
+    #frameworkTable tr > td {
+      padding-left: 1em;
+      padding-right: 1em;
+    }
+  }
+  @media (max-width: 360px) {
+    #frameworkTable {
+      max-width: 100%;
+      overflow: auto;
+      min-height: 80vh;
+      margin: 0 auto;
+    }
+
+    #frameworkTable tr > td {
+      padding-left: 1em;
+      padding-right: 1em;
+    }
+  }
+</style>
