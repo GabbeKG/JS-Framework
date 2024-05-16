@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 
 ### State of JS with Astro
 
@@ -7,9 +7,7 @@
 - Run npm i
 - Run npm i astro
 
-# To run cypress:
 
-npm test
 
 # To run project
 
